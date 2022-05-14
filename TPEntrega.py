@@ -1,5 +1,9 @@
+from functools import partialmethod
 from random import choice
 from utiles import *
+import time
+
+PALABRA_ADIVINAR = choice(obtener_palabras_validas())
 
 def adivinar(): #elige una palabra al azar
     '''
@@ -74,11 +78,14 @@ def palabra_arriesgo (): #Recibe una palabra al azar
             intentos = 6
             print(obtener_color("Defecto") + "\npalabra a adivinar: ", palabras[1])
             print("Ganaste!")
+            ganaste = True
+
         else:
             intentos += 1
             print(obtener_color("Defecto") + "Incorrecto")
-
+    
     return ganaste
+
 
 def generar_matriz()->list:
     '''
@@ -124,4 +131,43 @@ def reemplazar_palabra(matriz,intento,palabra):
     return matriz
 
 
-palabra_arriesgo()
+def tiempo_jugado():
+    
+    #Funcion que va a mostrar el tiempo que tarde el usuario en adivinar la palabra
+    
+    inicio_de_partida = time.time()
+    
+    final_de_partida = time.time()
+
+    tiempo_segundos = round(final_de_partida - inicio_de_partida) # Tiempo de juego en segundos
+    tiempo_minutos = round(tiempo_segundos // 60) #tiempo de juego en minutos
+
+    tiempo_total = print(f"Te tardaste {tiempo_minutos} minutos y {tiempo_segundos} segundos en adivinar la palabra") 
+
+    return tiempo_total 
+
+tiempo_jugado()
+
+def volver_a_jugar():
+
+    partida_terminada = palabra_arriesgo()
+
+    while partida_terminada == True:
+
+        seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+
+        if seguir_jugando == 'S':
+
+            palabra_arriesgo()
+
+        elif seguir_jugando == 'N':
+
+            print("OK, chau.")
+
+        else:
+
+            print("No entiendo")
+            seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+
+
+volver_a_jugar()
