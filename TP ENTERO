@@ -1,0 +1,249 @@
+from functools import partialmethod
+from random import choice
+from utiles import *
+import time
+
+
+
+def adivinar(): #elige una palabra al azar
+    '''
+    Funcion que tiene como objetivo retornar una palabra elegida al azar para que el usuario descubra.
+    '''
+    #AUTOR : ANDRES DOSKOCH
+    LISTA = obtener_palabras_validas() 
+    palabra = choice(LISTA)
+    return palabra.upper()
+
+def poner_color(arriesgo,conjunto_palabras):
+    '''
+    Recibe la palabra que arriesgue el usuario, comprueba que sean iguales con la original.
+    Retorna una palabra que contiene los colores de acuerdo a si su posicion es correcta.
+    '''
+    #ANDRES DOSKOCH 
+    palabra_color = ""
+    palabra = conjunto_palabras[0]
+    for i in range (0, len(arriesgo)):
+    
+        if i in range (0, len (palabra)):
+
+            if arriesgo[i] == palabra[i]:
+                palabra_color += obtener_color("Verde") + arriesgo[i]
+            elif (arriesgo[i] in palabra) and arriesgo[i] != palabra[i]:
+                palabra_color += obtener_color("Amarillo") + arriesgo[i]
+            else:
+                palabra_color += obtener_color("Defecto") + arriesgo[i]
+    modificar_oculta(arriesgo,conjunto_palabras)
+    return palabra_color
+
+
+def modificar_oculta(palabra_sin_revelar,conjunto_palabras):
+    #AUTOR : Lautaro Martin Sotelo
+    auxiliar = conjunto_palabras[0]
+    auxiliar_2 = conjunto_palabras[1]
+    palabra_oculta = ""
+    for i in range(len(auxiliar)):
+        if auxiliar_2[i] != "?":
+            palabra_oculta += auxiliar_2[i]
+        elif palabra_sin_revelar[i] == auxiliar[i] :
+            palabra_oculta += palabra_sin_revelar[i]
+        else:
+            palabra_oculta += "?"
+    conjunto_palabras[1] = palabra_oculta
+
+
+def ingreso_usuario (): #AUTOR> ANDRES DOSKOCH
+    valido = False
+    while valido == False:
+        mensaje1 = (input("Ingrese nombre de Jugador 1: "))
+        if mensaje1.isdigit() or mensaje1 == '':
+            print("¡ERROR!. Ingresaste solo numeros / nombre vacio.")
+            print("Ejemplo: Juan123 , Andres River Plate, Gallardo_por_siempre")
+        else:
+            valido = True
+        mensaje2 = (input("Ingrese nombre de Jugador 2: "))
+        if mensaje1.isdigit() or mensaje1 == '':
+            print("¡ERROR!. Ingresaste solo numeros / nombre vacio.")
+            print("Ejemplo: Juan123 , Andres River Plate, Gallardo_por_siempre")
+        else:
+            valido = True     
+    return mensaje1, mensaje2  
+
+def introducir_arriesgo():
+    #AUTOR: ANDRES DOSKOCH
+    '''
+    Funcion que tiene como objetivo ingresar la palabra que el usuario arriesga para adivinar, y retornarla para su uso posterior
+    '''
+    arriesgo = input("Arriesgo: ")
+    while len(arriesgo) != 5:
+        print ("El largo de la palabra debe contener 5 letras\n")
+        arriesgo = input("Arriesgo: \n")
+    return arriesgo.upper()
+
+def palabra_arriesgo (): #FUNCION MAIN ()
+    #AUTORES: ANDRES DOSKOCH / RENATO VILLALBA / LAUTARO SOTELO 
+    #Recibe una palabra al azar 
+    palabras = [adivinar(),"?????"]
+    ganaste = False
+    matriz = generar_matriz()
+    intentos = 1
+ #  nombre_usuarios = ingreso_usuario ()
+    while intentos <= 5:
+        empiezaTiempo = time.time()
+        print("Palabra a adivinar: ",palabras[1])
+        arriesgo = introducir_arriesgo()
+        palabra_color = poner_color(arriesgo,palabras)
+        modificar_oculta(arriesgo,palabras)
+        reemplazar_palabra(matriz,intentos,palabra_color)
+        mostrar_matriz(matriz)
+        if arriesgo == palabras[0] :
+            intentos = 6
+            print(obtener_color("Defecto") + "\npalabra a adivinar: ", palabras[1])
+            print("Ganaste!")
+            ganaste = True
+            tiempoJuego = time.time() - empiezaTiempo
+            print("Tiempo del Juego: %.2f segundos." % tiempoJuego)
+        else:
+            intentos += 1
+            print(obtener_color("Defecto") + "Incorrecto")
+
+    return ganaste
+
+
+
+def generar_matriz()->list:
+    '''
+    Este tablero "vacio" sera el que visualizen los jugadores durante la partida.
+    '''
+    #AUTOR : Lautaro Martin Sotelo
+    matriz_vacia = []
+    for filas in range(5):
+        matriz_vacia.append(["?????"]) # a la matriz vacia , introduzco sublistas que contienen string con "?" para luego rellenarse.
+    return matriz_vacia 
+
+
+
+def mostrar_matriz(matriz:list):
+    '''
+    Funcion que tiene como objetivo mostrar al usuario la palabra introducida y las anteriores.
+    '''
+    #AUTOR :Lautaro Martin Sotelo
+    for filas in matriz: 
+        print(filas[0])# accedo a cada sublista y printeo su contenido
+
+
+
+def reemplazar_palabra(matriz,intento,palabra):
+    '''
+    Funcion que recibe la matriz, el numero de intento, y la palabra introducida.
+    Reemplaza en la matriz por la palabra arriesgada y retorna la nueva matriz con la posicion cambiada
+    '''
+    #AUTOR : Lautaro Martin Sotelo
+    if intento == 1:
+        matriz[intento - 1][0] = palabra #Para saber a que fila se debe acceder, el intento -1 sera la fila del usuario, y 0 sera siempre su columna
+    elif intento == 2:
+        matriz[intento - 1][0] = palabra 
+    elif intento == 3:
+        matriz[intento - 1][0] = palabra
+    elif intento == 4:
+        matriz[intento - 1][0] = palabra
+    elif intento == 5:
+        matriz[intento - 1][0] = palabra
+    return matriz
+
+   
+ 
+
+#AUTOR : RENATO VILLALBA
+"""
+def tiempo_jugado():
+    '''
+    Funcion que va a mostrar el tiempo que tarde el usuario en adivinar la palabra
+    '''
+    #Renato Villalba
+
+    intento = introducir_arriesgo()
+    inicio_de_partida = time.time() #Comienza el temporizador desde 0
+    tiempo_total = 0
+    
+    if intento == PALABRA_ADIVINAR: 
+
+        final_de_partida = time.time() #finaliza el temporizador
+
+        tiempo_segundos = round(final_de_partida - inicio_de_partida)
+        tiempo_minutos = round(tiempo_segundos // 60)
+        tiempo_total = print(f"Te tardaste {tiempo_minutos} minutos y {tiempo_segundos} segundos en adivinar la palabra")
+
+    return tiempo_total"""
+
+
+
+
+#AUTOR : RENATO VILLALBA
+def volver_a_jugar():
+    '''
+    Funcion que recibe la respuesta del usuario para saber si se vuelve a jugar o termina el programa
+    '''
+    #Renato Villalba
+    partida_terminada = palabra_arriesgo() #Recibe un booleano
+
+    while partida_terminada == True:
+
+        seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+
+        while seguir_jugando.lower() != 's' and seguir_jugando.lower() != 'n':
+
+            print("No entiendo")
+            seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+
+        if seguir_jugando.lower() == 's':
+
+            PALABRA_ADIVINAR = choice(obtener_palabras_validas()) #Genera la palabra al azar
+            palabra_arriesgo()
+
+        elif seguir_jugando.lower() == 'n':
+            
+            partida_terminada = False
+            print("OK, chau.")
+
+
+
+#Autor: Alan Nestor Cristobo 
+"""
+def Validacion(palabra):
+    palabra = ["b","s","c","a","v"]
+    '''
+
+    Esta Funcion tiene como objetivo evaluar si la palabra ingresada por el usuario es o no valida
+
+    '''
+    #Alan Nestor Cristobo
+    Error = 0
+    if len(palabra) != 5:   # Evaluo la cantidad de caracteres  
+        Error = 1
+        print("La palabra no contiene 5 letras")
+
+    for x in palabra:   # Evaluo si posee numeros
+        if x.isnumeric() == True:
+            Error = 2
+    if Error == 2:
+        print("La palabra solo puede contener letras")
+
+    separador =""   # Junto la lista con la funcion Join para poner los caracteres en mayusculas
+    palabra = separador.join(palabra)
+    palabra = palabra.upper()
+    eliminar_acentos = (("Á", "A"), ("É", "E"), ("Í", "I"), ("Ó", "O"), ("Ú", "U"))
+    for a, b in eliminar_acentos:   # Elimino los acentos con un Replace
+        palabra = palabra.replace(a, b).replace(a, b)
+    if palabra.isalnum() == False:  # Evaluo si tiene caracteres especiales 
+        Error = 3
+    palabra = list(palabra) # La rearmo como cada caracter por separado
+
+    if Error == 0:
+        return palabra
+
+
+print(Validacion("a"))
+
+"""
+
+volver_a_jugar()
