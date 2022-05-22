@@ -132,42 +132,49 @@ def reemplazar_palabra(matriz,intento,palabra):
 
 
 def tiempo_jugado():
-    
-    #Funcion que va a mostrar el tiempo que tarde el usuario en adivinar la palabra
-    
-    inicio_de_partida = time.time()
-    
-    final_de_partida = time.time()
+    '''
+    Funcion que va a mostrar el tiempo que tarde el usuario en adivinar la palabra
+    '''
+    #Renato Villalba
 
-    tiempo_segundos = round(final_de_partida - inicio_de_partida) # Tiempo de juego en segundos
-    tiempo_minutos = round(tiempo_segundos // 60) #tiempo de juego en minutos
+    intento = introducir_arriesgo()
+    inicio_de_partida = time.time() #Comienza el temporizador desde 0
+    tiempo_total = 0
+    if intento == PALABRA_ADIVINAR: 
 
-    tiempo_total = print(f"Te tardaste {tiempo_minutos} minutos y {tiempo_segundos} segundos en adivinar la palabra") 
+        final_de_partida = time.time() #finaliza el temporizador
 
-    return tiempo_total 
+        tiempo_segundos = round(final_de_partida - inicio_de_partida)
+        tiempo_minutos = round(tiempo_segundos // 60)
+        tiempo_total = print(f"Te tardaste {tiempo_minutos} minutos y {tiempo_segundos} segundos en adivinar la palabra")
 
-tiempo_jugado()
+    return tiempo_total
 
 def volver_a_jugar():
-
-    partida_terminada = palabra_arriesgo()
+    '''
+    Funcion que recibe la respuesta del usuario para saber si se vuelve a jugar o termina el programa
+    '''
+    #Renato Villalba
+    partida_terminada = palabra_arriesgo() #Recibe un booleano
 
     while partida_terminada == True:
 
         seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
 
-        if seguir_jugando == 'S':
-
-            palabra_arriesgo()
-
-        elif seguir_jugando == 'N':
-
-            print("OK, chau.")
-
-        else:
+        while seguir_jugando.lower() != 's' and seguir_jugando.lower() != 'n':
 
             print("No entiendo")
             seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
 
+        if seguir_jugando.lower() == 's':
 
+            PALABRA_ADIVINAR = choice(obtener_palabras_validas()) #Genera la palabra al azar
+            palabra_arriesgo()
+
+        elif seguir_jugando.lower() == 'n':
+            
+            partida_terminada = False
+            print("OK, chau.")
+
+#tiempo_jugado()
 volver_a_jugar()
