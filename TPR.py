@@ -156,30 +156,47 @@ def volver_a_jugar():
     Funcion que recibe la respuesta del usuario para saber si se vuelve a jugar o termina el programa
     '''
     #Renato Villalba
-    partida_terminada = palabra_arriesgo() #Recibe un booleano
+    partida_terminada = palabra_arriesgo() #Recibe un booleanos
     volver_adivinar = adivinar()
 
-    seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
-    
-    while seguir_jugando.lower() != 's' and seguir_jugando.lower() != 'n':
+    while partida_terminada:
 
-        print("No entiendo")
-        seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+        if partida_terminada == False:
 
-    if seguir_jugando.lower() == 'n':
+            print("Perdiste")
+            seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
 
-        print("OK, chau.")
+            while seguir_jugando.lower() != 's' and seguir_jugando.lower() != 'n':
 
-    while (partida_terminada) and seguir_jugando.lower() == 's':
+                print("No entiendo")
+                seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
 
-        partida_terminada
-        volver_adivinar
-        seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+            if seguir_jugando.lower() == 's':
 
-        if seguir_jugando.lower() == 'n':
+                partida_terminada
+                volver_adivinar
 
-            print("OK, chau.")
+            elif seguir_jugando.lower() == 'n':
+            
+                partida_terminada = False
+                print("OK, chau.")
         
+        seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+
+        while seguir_jugando.lower() != 's' and seguir_jugando.lower() != 'n':
+
+            print("No entiendo")
+            seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+
+        if seguir_jugando.lower() == 's':
+
+            palabra_arriesgo()
+            volver_adivinar
+
+        elif seguir_jugando.lower() == 'n':
+            
+            partida_terminada = False
+            print("OK, chau.")
 
 #tiempo_jugado()
 volver_a_jugar()
