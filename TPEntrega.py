@@ -148,15 +148,15 @@ def Validacion(arriesgo):
 def reemplazar_caracteres_acentuados(arriesgo):
     palabra = ""
     for caracteres in arriesgo:
-        if caracteres in arriesgo == "Á":
+        if caracteres == "Á":
             palabra += "A"
-        elif caracteres in arriesgo == "É":
+        elif caracteres == "É":
             palabra += "E"
-        elif caracteres in arriesgo == "Í":
+        elif caracteres == "Í":
             palabra += "I"
-        elif caracteres in arriesgo == "Ó":
+        elif caracteres == "Ó":
             palabra += "O"
-        elif caracteres in arriesgo == "Ú":
+        elif caracteres == "Ú":
             palabra += "U"
         else:
             palabra += caracteres.upper()
@@ -173,9 +173,9 @@ def introducir_arriesgo():
         arriesgo = input("Arriesgo: ")
         arriesgo = arriesgo.upper()
         valido = Validacion(arriesgo.upper())
-    if ("Á" or "É" or "Ú" or "Ó" or "Í") in arriesgo:
-        arriesgo = reemplazar_caracteres_acentuados(arriesgo)
+    arriesgo = reemplazar_caracteres_acentuados(arriesgo)
     return arriesgo
+
 def generar_matriz()->list:
     '''
     Este tablero "vacio" inicialmente, sera el que visualizen los jugadores durante la partida,
