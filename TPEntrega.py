@@ -1,7 +1,53 @@
 from functools import partialmethod
 from random import choice
+from numpy import true_divide
 from utiles import *
 import time
+
+def mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuario,turno,puntos):
+    #AUTOR: SOTELO LAUTARO MARTIN
+    '''
+    Funcion que solo tiene como objetivo printear los puntos de 2 jugadores
+    '''
+    turno_contrario = cambiar_jugar_partida(turno)
+    usuario_2 = list(puntuaciones_jugador.keys())[turno_contrario]
+    if intento==1 and partida_ganada==True:
+        puntuaciones_jugador[usuario_2] -= puntos
+        print ("El usuario {} obtuvo un total de {} puntos,acumulando {} y el usuario {} perdio un total de {} puntos acumulando {}".format(usuario,puntos,puntuaciones_jugador[usuario],usuario_2,puntos,puntuaciones_jugador[usuario_2]))
+    elif intento>1 and partida_ganada==True:
+        puntuaciones_jugador[usuario_2] -= puntos
+        print ("El usuario {} obtuvo un total de {} puntos,acumulando {} y el usuario {} perdio un total de {} puntos acumulando {}".format(usuario,puntos,puntuaciones_jugador[usuario],usuario_2,puntos,puntuaciones_jugador[usuario_2]))
+    elif intento>1 and partida_ganada==False:
+        puntuaciones_jugador[usuario_2] -= 50 
+        print ("El usuario {} obtuvo un total de {} puntos,acumulando {} y el usuario {} perdio un total de {} puntos acumulando {}".format(usuario,puntos,puntuaciones_jugador[usuario],usuario_2,-50,puntuaciones_jugador[usuario_2]))
+       
+
+def mostrar_puntos_1_jugador(intento,partida_ganada,puntuaciones_jugador,usuario,puntos):
+    #AUTOR : SOTELO LAUTARO MARTIN
+    '''
+    Funcion que solo tiene como objetivo printear los puntos de 1 jugador
+    '''
+    if intento==1 and partida_ganada==True:
+        print ("Obtuviste un total de", puntos,"puntos")
+    elif intento>1 and partida_ganada==True:
+        print ("Obtuviste un total de", puntos ,"puntos, tenes acumulado:",puntuaciones_jugador[usuario])
+    elif intento>1 and partida_ganada==False:
+        print ("Perdiste un total de", puntos ,"puntos, tenes acumulado:",puntuaciones_jugador[usuario])
+
+def puntos(intento,partida_ganada,puntuaciones_jugador,turno,modo):
+    #AUTOR : PABLO MARTINEZ
+    #funcion que dependiendo de la  cantidad de intentos recorre el diccionario de puntos y otorga dichos puntos al jugador.
+    intentos_y_puntajes={1:50,2:40,3:30,4:20,5:10,6:-100}
+    puntos=intentos_y_puntajes.get(intento)
+    if modo == 2:
+        usuario = list(puntuaciones_jugador.keys())[turno] # convirtiendolo en lista, la pos 0 sera el jugador 1, y la pos 1 sera el jugador 2.
+        puntuaciones_jugador[usuario] += puntos
+        mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuario,turno,puntos)
+    else:
+        #Hacer llamado a funcion de elegir numero del jugador para registrar la acumulacion de puntos del jugador especifico.
+        usuario = list(puntuaciones_jugador.keys())[turno] # convirtiendolo en lista, la pos 0 sera el jugador 1, y la pos 1 sera el jugador 2.
+        puntuaciones_jugador[usuario] += puntos
+        mostrar_puntos_1_jugador(intento,partida_ganada,puntuaciones_jugador,usuario,puntos)
 
 def poner_color(arriesgo,conjunto_palabras):
     '''
@@ -57,11 +103,14 @@ def validar_usuario():
 
 def registrar_usuarios (): #AUTOR> ANDRES DOSKOCH / 
     '''
-    Funcion que crea una tupla de 2 usuarios con las validaciones correctas.
+    Funcion que crea un diccionario de 2 usuarios ,validando primero su ingreso.
     '''
+    print("USUARIO_1: ")
     usuario_1 = validar_usuario()
+    print("USUARIO_2: ")
     usuario_2 = validar_usuario()
-    return usuario_1, usuario_2
+    diccionario = {usuario_1:0,usuario_2:0}
+    return diccionario
 
 def Validacion(palabra):
     palabra = ["b","s","c","a","v"]
@@ -145,7 +194,6 @@ def reemplazar_palabra(matriz,intento,palabra):
         matriz[intento - 1][0] = palabra
     return matriz
 
-#AUTOR : RENATO VILLALBA
 def tiempo_jugado(tiempo_de_juego):
     '''
     Funcion que va a mostrar el tiempo que tarde el usuario en adivinar la palabra
@@ -154,27 +202,54 @@ def tiempo_jugado(tiempo_de_juego):
     #AUTOR: RENATO VILLALBA 
     tiempo_minutos = round(tiempo_de_juego // 60)
     tiempo_segundos = round(tiempo_de_juego % 60)
-    tiempo_total = print(f"Te tardaste {tiempo_minutos} minutos y {tiempo_segundos} segundos en adivinar la palabra.")
+    tiempo_total = print(f"Ganaste! Tardaste {tiempo_minutos} minutos y {tiempo_segundos} segundos en adivinar la palabra.")
 
     return tiempo_total
 
-def determinar_final_partida(arriesgo,palabras,intentos,tiempo_inicial):
-    #AUTOR: ANDRES DOSKOCH / MOD : LAUTARO MARTIN SOTELO
+def determinar_final_partida(arriesgo,palabras,intentos,tiempo_inicial,usuarios,turno,modo):
+    #AUTOR: ANDRES DOSKOCH / MOD : LAUTARO MARTIN SOTELO - RENADO VILLALBA
     #Funcion que informa cuando se a acabado el turno del jugador y a su vez imprime el tiempo que tardo, como los puntos del jugador .
     partida_terminada = False
     if arriesgo.upper() == palabras[0] :
         print(obtener_color("Defecto") + "\npalabra a adivinar: ", palabras[1])
-        print("Ganaste!")
         partida_terminada = True
         tiempoJuego = time.time() - tiempo_inicial
         tiempo_jugado(tiempoJuego)
-    elif intentos == 5 and arriesgo.upper() != palabras[0]:
+        puntos(intentos,partida_terminada,usuarios,turno,modo)
+    elif intentos == 6 and arriesgo.upper() != palabras[0]:
         print(obtener_color("Defecto") + "\npalabra a adivinar: ",palabras[0])
-        print("Perdiste")
+        puntos(intentos,partida_terminada,usuarios,turno,modo)
+        print("Perdiste!")
         partida_terminada = True
     return partida_terminada
 
-def juego():
+def elegir_quien_comienza(lista):
+    #AUTOR: IGNACIO OVIEDO 
+    '''
+    Elige al azar quien comenzara el juego
+    '''
+    valor = [0,1]
+    turno = choice(valor)
+    lista[0] = turno
+
+def cambiar_jugador_global(lista):
+    #AUTOR:IGNACIO OVIEDO
+    """
+    Es para ir variando el inicio de los jugadores en el modo dos jugadores,variando el valor de la lista
+    """
+    if lista[0] == 0:
+        lista[0] = 1
+    else:
+        lista[0] = 0
+
+def cambiar_jugar_partida(numero):
+    if numero == 0:
+        numero = 1
+    else:
+        numero = 0
+    return numero
+
+def juego(usuarios,turno,modo):
     #AUTORES: ANDRES DOSKOCH / MOD: RENATO VILLALBA - LAUTARO SOTELO 
     #Funcion que desarolla el juego de palabras, generando una matriz y la palabra que se busca adivinar, asi a su vez mostrando al usuario su tablero.
     palabra_adivinar = choice(obtener_palabras_validas()) 
@@ -184,40 +259,78 @@ def juego():
     partida_terminada = False
     print(palabras[0])
     while partida_terminada == False:
+        print("Es el turno de {}".format(list(usuarios.keys())[turno])) #Similar que en la funcion puntos, al convertirlo en lista, solo accediendo a la posicion accedo a la clave/nombre del usuario.
         empiezaTiempo = time.time()
         print("Palabra a adivinar: ",palabras[1])
+        mostrar_matriz(matriz)
         arriesgo = introducir_arriesgo()
         palabra_color = poner_color(arriesgo,palabras)
         modificar_oculta(arriesgo,palabras)
         reemplazar_palabra(matriz,intentos,palabra_color)
         mostrar_matriz(matriz)
-        partida_terminada = determinar_final_partida(arriesgo,palabras,intentos,empiezaTiempo)
+        if modo == 2:
+            turno = cambiar_jugar_partida(turno)
+        partida_terminada = determinar_final_partida(arriesgo,palabras,intentos,empiezaTiempo,usuarios,turno,modo)
+        print(usuarios)
         if partida_terminada == False:
             intentos += 1
             print(obtener_color("Defecto") + "")
     return partida_terminada
 
+def eleccion_jugadores():
+    #AUTOR: IGNACIO OVIEDO
+    """
+    Esta funcion es para que el usuario elija de a cuantos jugadores quiere jugar.
+    """
+    eleccion = int(input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: "))
+    while eleccion!=1 and eleccion!=2 and eleccion.isNumber()==False:
+        print(f"Disculpe, no entendi. Recuerde que solo puede responder 1 o 2")
+        eleccion=input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: ")
+    return eleccion
+
+def ganador_2_jugadores(usuarios):
+    #AUTOR : LAUTARO MARTIN SOTELO
+    ganador = sorted(usuarios,key=lambda x:x )
+    print("El ganador es {} con un total de {} puntos.".format(ganador[0],usuarios[ganador[0]]))
+
+def volver_a_jugar(partida_terminada,seguir_jugando,usuarios,modo,turno):
+    #AUTOR: RENATO VILLALBA
+    if seguir_jugando.lower() == 's':
+        if modo == 2:
+            cambiar_jugador_global(turno)
+            partida_terminada = juego(usuarios,turno[0],modo)
+        else:
+            partida_terminada = juego(usuarios,turno[0],modo)
+    elif seguir_jugando.lower() == 'n':
+        if modo == 2:
+            ganador_2_jugadores(usuarios)
+        partida_terminada = False
+        print("Hasta luego!Fiuble cerrando.")
+    return partida_terminada
+
 def main():
     #FUNCION MAIN ()
-    #AUTORES: RENATO VILLALBA / MOD : LAUTARO MARTIN SOTELO
+    #AUTORES: RENATO VILLALBA / MOD: IGNACIO OVIEDO - SOTELO LAUTARO MARTIN
     #Su funcionalidad es iniciar el juego de palabras, como tambien determinar si el usuario quiere seguir el juego.
-    partida_terminada = juego() #Inicia el juego y retorna el boleano True si la partida termino
-
+    print("---Bienvenido a FIUBLE---\n")
+    print("El objetivo del juego es adivinar una palabra en menos de 5 intentos\n")
+    print("A continuacion , eliga si quiere jugar solo 1 jugador o 2.\n")
+    modo = eleccion_jugadores() # se elige el modo el cual se desarrolla el juego, de 1 solo jugador o 2.
+    turno_global = [0] #Los turnos seran una lista, para evitar el uso de muchos returns, y para que su valor sea mutable continuamente, asi alterar entre jugador y jugador.
+    if modo == 2:
+        usuarios = registrar_usuarios() #Se registra a los usuarios que desarrollaran el juego.
+        elegir_quien_comienza(turno_global)#Se toma al azar el valor del turno.
+        partida_terminada = juego(usuarios,turno_global[0],modo)
+    else:
+        usuarios = {"Jugador_1":0} #Se crea un diccionario generico para el caso de que sea 1 solo jugador.
+        partida_terminada = juego(usuarios,turno_global[0],modo)
     while partida_terminada == True:
-
-        seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
+        seguir_jugando = input("Desea jugar otra partida? (S/N): ")
 
         while seguir_jugando.lower() != 's' and seguir_jugando.lower() != 'n':
 
             print("No entiendo")
-            seguir_jugando = input("Desea jugar otra partida? (S/N)\n")
-
-        if seguir_jugando.lower() == 's':
-            juego()#vuelve a llamar la funcion de juego, donde se creara una nueva matriz y buscara una nueva palabra
-
-        elif seguir_jugando.lower() == 'n':
-
-            partida_terminada = False
-            print("OK, chau.")
-
+            seguir_jugando = input("Desea jugar otra partida? (S/N): ")
+        partida_terminada = volver_a_jugar(partida_terminada,seguir_jugando,usuarios,modo,turno_global)
+    
 main()
