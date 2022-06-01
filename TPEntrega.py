@@ -112,37 +112,55 @@ def registrar_usuarios (): #AUTOR> ANDRES DOSKOCH /
     diccionario = {usuario_1:0,usuario_2:0}
     return diccionario
 
-def Validacion(palabra):
-    palabra = ["b","s","c","a","v"]
+def buscar_invalidaciones(arriesgo):
+    '''
+    Funcion que recorre el arriesgo hasta que encuentre un caracter no valido
+    '''
+    caracteres_validos = ("QWERTYUIOPASDFGHJKLZXCVBNMÁÉÍÓÚ")
+    valido = True
+    contador = 0
+    while valido and contador < len(arriesgo):
+        caracter = arriesgo[contador].upper()
+        if caracter.isnumeric() or caracter not in caracteres_validos:
+            print("Su ingreso de palabra posee caracteres numericos, reingrese nuevamente.")
+            valido = False
+        contador += 1
+    return valido
+
+def Validacion(arriesgo):
     '''
 
     Esta Funcion tiene como objetivo evaluar si la palabra ingresada por el usuario es o no valida
 
     '''
-    #Alan Nestor Cristobo
-    Error = 0
-    if len(palabra) != 5:   # Evaluo la cantidad de caracteres  
-        Error = 1
+    #AUTOR: ALAN NESTOR CRISTOBO
+    valido = True
+    if len(arriesgo) != 5:   # Evaluo la cantidad de caracteres  
         print("La palabra no contiene 5 letras")
+        valido = False
+    elif arriesgo.isalnum() == False:  # Evaluo si tiene caracteres especiales 
+        print("Su ingreso posee caracteres especiales")
+        valido = False
+    else:
+        valido = buscar_invalidaciones(arriesgo)
+    return valido
 
-    for x in palabra:   # Evaluo si posee numeros
-        if x.isnumeric() == True:
-            Error = 2
-    if Error == 2:
-        print("La palabra solo puede contener letras")
-
-    separador =""   # Junto la lista con la funcion Join para poner los caracteres en mayusculas
-    palabra = separador.join(palabra)
-    palabra = palabra.upper()
-    eliminar_acentos = (("Á", "A"), ("É", "E"), ("Í", "I"), ("Ó", "O"), ("Ú", "U"))
-    for a, b in eliminar_acentos:   # Elimino los acentos con un Replace
-        palabra = palabra.replace(a, b).replace(a, b)
-    if palabra.isalnum() == False:  # Evaluo si tiene caracteres especiales 
-        Error = 3
-    palabra = list(palabra) # La rearmo como cada caracter por separado
-
-    if Error == 0:
-        return palabra
+def reemplazar_caracteres_acentuados(arriesgo):
+    palabra = ""
+    for caracteres in arriesgo:
+        if caracteres in arriesgo == "Á":
+            palabra += "A"
+        elif caracteres in arriesgo == "É":
+            palabra += "E"
+        elif caracteres in arriesgo == "Í":
+            palabra += "I"
+        elif caracteres in arriesgo == "Ó":
+            palabra += "O"
+        elif caracteres in arriesgo == "Ú":
+            palabra += "U"
+        else:
+            palabra += caracteres.upper()
+    return palabra
 
 def introducir_arriesgo():
     #AUTOR: ANDRES DOSKOCH
@@ -150,12 +168,14 @@ def introducir_arriesgo():
     Funcion que tiene como objetivo ingresar la palabra que el usuario arriesga 
     para adivinar, y retornarla para su uso posterior
     '''
-    arriesgo = input("Arriesgo: ")
-    while len(arriesgo) != 5:
-        print ("El largo de la palabra debe contener 5 letras\n")
-        arriesgo = input("Arriesgo: \n")
-    return arriesgo.upper()
-
+    valido = False
+    while valido == False:
+        arriesgo = input("Arriesgo: ")
+        arriesgo = arriesgo.upper()
+        valido = Validacion(arriesgo.upper())
+    if ("Á" or "É" or "Ú" or "Ó" or "Í") in arriesgo:
+        arriesgo = reemplazar_caracteres_acentuados(arriesgo)
+    return arriesgo
 def generar_matriz()->list:
     '''
     Este tablero "vacio" inicialmente, sera el que visualizen los jugadores durante la partida,
@@ -271,7 +291,6 @@ def juego(usuarios,turno,modo):
         if modo == 2:
             turno = cambiar_jugar_partida(turno)
         partida_terminada = determinar_final_partida(arriesgo,palabras,intentos,empiezaTiempo,usuarios,turno,modo)
-        print(usuarios)
         if partida_terminada == False:
             intentos += 1
             print(obtener_color("Defecto") + "")
