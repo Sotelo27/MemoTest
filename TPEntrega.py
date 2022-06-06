@@ -116,6 +116,7 @@ def buscar_invalidaciones(arriesgo):
     '''
     Funcion que recorre el arriesgo hasta que encuentre un caracter no valido
     '''
+    #AUTOR: ALAN NESTOR CRISTOBO
     caracteres_validos = ("QWERTYUIOPASDFGHJKLZXCVBNMÁÉÍÓÚ")
     valido = True
     contador = 0
@@ -146,6 +147,10 @@ def Validacion(arriesgo):
     return valido
 
 def reemplazar_caracteres_acentuados(arriesgo):
+    '''
+    Funcion que reemplaza los caracteres acentuados
+    '''
+     #AUTOR: ALAN NESTOR CRISTOBO
     palabra = ""
     for caracteres in arriesgo:
         if caracteres == "Á":
