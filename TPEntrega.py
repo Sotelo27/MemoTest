@@ -5,7 +5,7 @@ from utiles import *
 import time
 
 def mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuario,turno,puntos):
-    #AUTOR: PABLO MARTINEZ
+    #AUTOR: PABLO MARTINEZ / MOD :LAUTARO MARTIN SOTELO
     '''
     Funcion que solo tiene como objetivo printear los puntos de 2 jugadores
     '''
@@ -35,7 +35,7 @@ def mostrar_puntos_1_jugador(intento,partida_ganada,puntuaciones_jugador,usuario
         print ("Perdiste un total de", puntos ,"puntos, tenes acumulado:",puntuaciones_jugador[usuario])
 
 def puntos(intento,partida_ganada,puntuaciones_jugador,turno,modo):
-    #AUTOR : PABLO MARTINEZ
+    #AUTOR : PABLO MARTINEZ 
     #funcion que dependiendo de la  cantidad de intentos recorre el diccionario de puntos y otorga dichos puntos al jugador.
     intentos_y_puntajes={1:50,2:40,3:30,4:20,5:10,6:-100}
     puntos=intentos_y_puntajes.get(intento)
@@ -72,14 +72,15 @@ def poner_color(arriesgo,conjunto_palabras):
 def modificar_oculta(palabra_sin_revelar,conjunto_palabras):
     #AUTOR : Lautaro Martin Sotelo
     '''
-    Funcion que modifica la palabra oculta de la lista de acuerdo a si la posicion es correcta o no , con su color correspondiente.
+    Funcion que modifica la palabra oculta de la lista de acuerdo a si la posicion es correcta o no , 
+    con su color correspondiente.
     '''
-    auxiliar = conjunto_palabras[0]
-    auxiliar_2 = conjunto_palabras[1]
-    palabra_oculta = ""
+    auxiliar = conjunto_palabras[0] #palabra revelada
+    auxiliar_2 = conjunto_palabras[1] #palabra sin revelar, con los "?????"
+    palabra_oculta = "" #string que reemplazara el valor de la posicion 1 de la lista
     for i in range(len(auxiliar)):
         if auxiliar_2[i] != "?":
-            palabra_oculta += auxiliar_2[i]
+            palabra_oculta += auxiliar_2[i] #Aqui se busca que en el caso de que el usuario haya revelado antes una palabra, se le agrega esa letra a la variable
         elif palabra_sin_revelar[i] == auxiliar[i] :
             palabra_oculta += palabra_sin_revelar[i]
         else:
@@ -309,7 +310,7 @@ def eleccion_jugadores():
     Esta funcion es para que el usuario elija de a cuantos jugadores quiere jugar.
     """
     eleccion = int(input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: "))
-    while eleccion!=1 and eleccion!=2 and eleccion.isNumber()==False:
+    while eleccion!=1 and eleccion!=2 :
         print(f"Disculpe, no entendi. Recuerde que solo puede responder 1 o 2")
         eleccion=input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: ")
     return eleccion
