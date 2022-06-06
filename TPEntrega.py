@@ -312,7 +312,7 @@ def eleccion_jugadores():
     eleccion = int(input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: "))
     while eleccion!=1 and eleccion!=2 :
         print(f"Disculpe, no entendi. Recuerde que solo puede responder 1 o 2")
-        eleccion=input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: ")
+        eleccion=int(input("¿De a cuantos jugadores quiere jugar?¿De 1 jugador o 2 jugadores?: "))
     return eleccion
 
 def ganador_2_jugadores(usuarios):
