@@ -5,7 +5,7 @@ from utiles import *
 import time
 
 def mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuario,turno,puntos):
-    #AUTOR: SOTELO LAUTARO MARTIN
+    #AUTOR: PABLO MARTINEZ
     '''
     Funcion que solo tiene como objetivo printear los puntos de 2 jugadores
     '''
@@ -23,7 +23,7 @@ def mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuar
        
 
 def mostrar_puntos_1_jugador(intento,partida_ganada,puntuaciones_jugador,usuario,puntos):
-    #AUTOR : SOTELO LAUTARO MARTIN
+    #AUTOR : PABLO MARTINEZ
     '''
     Funcion que solo tiene como objetivo printear los puntos de 1 jugador
     '''
@@ -150,7 +150,7 @@ def reemplazar_caracteres_acentuados(arriesgo):
     '''
     Funcion que reemplaza los caracteres acentuados
     '''
-     #AUTOR: ALAN NESTOR CRISTOBO
+    #AUTOR: ALAN NESTOR CRISTOBO
     palabra = ""
     for caracteres in arriesgo:
         if caracteres == "Á":
@@ -268,6 +268,8 @@ def cambiar_jugador_global(lista):
         lista[0] = 0
 
 def cambiar_jugar_partida(numero):
+    #AUTOR:IGNACIO OVIEDO
+    #cambia el jugador durante la ronda.
     if numero == 0:
         numero = 1
     else:
@@ -313,7 +315,7 @@ def eleccion_jugadores():
     return eleccion
 
 def ganador_2_jugadores(usuarios):
-    #AUTOR : LAUTARO MARTIN SOTELO
+    #AUTOR : IGNACIO OVIEDO
     ganador = sorted(usuarios,key=lambda x:x )
     print("El ganador es {} con un total de {} puntos.".format(ganador[0],usuarios[ganador[0]]))
 
