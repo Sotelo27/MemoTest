@@ -18,8 +18,9 @@ def mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuar
         puntuaciones_jugador[usuario_2] -= puntos
         print ("El usuario {} obtuvo un total de {} puntos,acumulando {} y el usuario {} perdio un total de {} puntos acumulando {}".format(usuario,puntos,puntuaciones_jugador[usuario],usuario_2,puntos,puntuaciones_jugador[usuario_2]))
     elif intento>1 and partida_ganada==False:
-        puntuaciones_jugador[usuario_2] -= 50 
-        print ("El usuario {} obtuvo un total de {} puntos,acumulando {} y el usuario {} perdio un total de {} puntos acumulando {}".format(usuario,puntos,puntuaciones_jugador[usuario],usuario_2,-50,puntuaciones_jugador[usuario_2]))
+        puntuaciones_jugador[usuario_2] -= 100 
+        puntuaciones_jugador[usuario] += 50
+        print ("El usuario {} obtuvo un total de {} puntos,acumulando {} y el usuario {} perdio un total de {} puntos acumulando {}".format(usuario,-50,puntuaciones_jugador[usuario],usuario_2,-100,puntuaciones_jugador[usuario_2]))
        
 
 def mostrar_puntos_1_jugador(intento,partida_ganada,puntuaciones_jugador,usuario,puntos):
@@ -40,7 +41,7 @@ def puntos(intento,partida_ganada,puntuaciones_jugador,turno,modo):
     intentos_y_puntajes={1:50,2:40,3:30,4:20,5:10,6:-100}
     puntos=intentos_y_puntajes.get(intento)
     if modo == 2:
-        usuario = list(puntuaciones_jugador.keys())[turno] # convirtiendolo en lista, la pos 0 sera el jugador 1, y la pos 1 sera el jugador 2.
+        usuario = list(puntuaciones_jugador.keys())[turno]# convirtiendolo en lista, la pos 0 sera el jugador 1, y la pos 1 sera el jugador 2.
         puntuaciones_jugador[usuario] += puntos
         mostrar_puntos_2_jugadores(intento,partida_ganada,puntuaciones_jugador,usuario,turno,puntos)
     else:
