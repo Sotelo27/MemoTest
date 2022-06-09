@@ -286,6 +286,7 @@ def juego(usuarios,turno,modo):
     matriz = generar_matriz()
     intentos = 1
     partida_terminada = False
+    print(palabras[0])
     while partida_terminada == False:
         print("Es el turno de {}".format(list(usuarios.keys())[turno])) #Similar que en la funcion puntos, al convertirlo en lista, solo accediendo a la posicion accedo a la clave/nombre del usuario.
         empiezaTiempo = time.time()
@@ -317,8 +318,8 @@ def eleccion_jugadores():
 
 def ganador_2_jugadores(usuarios):
     #AUTOR : IGNACIO OVIEDO
-    ganador = sorted(usuarios,key=lambda x:x )
-    print("El ganador es {} con un total de {} puntos.".format(ganador[0],usuarios[ganador[0]]))
+    ganador = sorted(usuarios.items(),key=lambda x:x[1],reverse=True)
+    print("El ganador es {} con un total de {} puntos.".format(ganador[0][0],ganador[0][1]))
 
 def volver_a_jugar(partida_terminada,seguir_jugando,usuarios,modo,turno):
     #AUTOR: RENATO VILLALBA
