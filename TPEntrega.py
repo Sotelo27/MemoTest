@@ -286,7 +286,7 @@ def juego(usuarios,turno,modo):
     matriz = generar_matriz()
     intentos = 1
     partida_terminada = False
-    print(palabras[0])
+    #print(palabras[0])
     while partida_terminada == False:
         print("Es el turno de {}".format(list(usuarios.keys())[turno])) #Similar que en la funcion puntos, al convertirlo en lista, solo accediendo a la posicion accedo a la clave/nombre del usuario.
         empiezaTiempo = time.time()
