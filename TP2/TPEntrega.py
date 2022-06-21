@@ -433,7 +433,7 @@ def volver_a_jugar(partida_terminada,seguir_jugando,usuarios,datos_globales):
     modo = datos_globales[0]
     if seguir_jugando.lower() == 's':
         if modo == 2:
-            datos_globales[1] = cambiar_jugador(datos_globales)
+            datos_globales[1] = cambiar_jugador(datos_globales[1])
             partida_terminada = juego(usuarios,datos_globales)
         else:
             partida_terminada = juego(usuarios,datos_globales)
