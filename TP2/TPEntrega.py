@@ -59,6 +59,16 @@ def puntos(datos_partida,puntuaciones_jugador):
         puntuaciones_jugador[usuario] += puntos
         mostrar_puntos_1_jugador(datos_partida,puntuaciones_jugador,usuario,puntos)
 
+def asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion):
+    letra = arriesgo[posicion]
+    if arriesgo[posicion] == palabra[posicion]:
+        palabra_color += obtener_color("Verde") + arriesgo[posicion] + obtener_color("Defecto")
+    elif (arriesgo[posicion] in palabra) and arriesgo[posicion] != palabra[posicion] and dic_letras[letra] <= palabra.count(letra):
+        palabra_color += obtener_color("Amarillo") + arriesgo[posicion] + obtener_color("Defecto")
+    else:
+        palabra_color += obtener_color("Defecto") + arriesgo[posicion]
+    return palabra_color
+
 def poner_color(arriesgo,conjunto_palabras):
     '''
     AUTOR: ANDRES DOSKOCH / MOD :Lautaro Martin Sotelo
@@ -70,16 +80,15 @@ def poner_color(arriesgo,conjunto_palabras):
     
     palabra_color = ""
     palabra = conjunto_palabras[0]
-    for i in range (0, len(arriesgo)):
-
-        if i in range (0, len (palabra)):
-
-            if arriesgo[i] == palabra[i]:
-                palabra_color += obtener_color("Verde") + arriesgo[i] + obtener_color("Defecto")
-            elif (arriesgo[i] in palabra) and arriesgo[i] != palabra[i]:
-                palabra_color += obtener_color("Amarillo") + arriesgo[i] + obtener_color("Defecto")
-            else:
-                palabra_color += obtener_color("Defecto") + arriesgo[i]
+    dic_letras = {}
+    for posicion in range(0,len(arriesgo)):
+        letra = arriesgo[posicion]
+        if letra not in dic_letras:
+            dic_letras[letra] = 1
+            palabra_color = asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion)
+        else:
+            dic_letras[letra] += 1
+            palabra_color = asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion)
     return palabra_color
 
 def modificar_oculta(palabra_sin_revelar,conjunto_palabras):
