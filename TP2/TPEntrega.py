@@ -91,7 +91,7 @@ def poner_color(arriesgo,conjunto_palabras):
             palabra_color = asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion)
     return palabra_color
 
-def modificar_oculta(palabra_sin_revelar,conjunto_palabras):
+def modificar_oculta(palabra_sin_revelar,conjunto_palabras): 
     '''
     AUTOR : LAUTARO MARTIN SOTELO
 
