@@ -59,37 +59,83 @@ def puntos(datos_partida,puntuaciones_jugador):
         puntuaciones_jugador[usuario] += puntos
         mostrar_puntos_1_jugador(datos_partida,puntuaciones_jugador,usuario,puntos)
 
-def asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion):
+def asignar_color_amarillo(conjunto_palabras,dic_letras,palabra_color_lista,posicion):
+    '''
+    AUTOR: LAUTARO MARTIN SOTELO
+
+    PRE: recibe lista conjunto palabras(contiene arriesgo del jugador y palabra a revelar), el dic letras vacio o no, la palabra color lista y 
+    por ultimo la posicion.
+
+    POST: agregara en caso de haber una palabra sin agregar al dicletras, y modifica los colores por defecto o no en color amarillo, informando que falta 1 letra de ese tipo
+    por adivinar.
+    '''
+    arriesgo = conjunto_palabras[0]
+    palabra = conjunto_palabras[1]
+    letra = arriesgo[posicion]
+    palabra_color = ''
+    if (letra in palabra) and arriesgo[posicion] != palabra[posicion] and dic_letras[letra] < palabra.count(letra):
+        asignar_letras(dic_letras,letra)
+        palabra_color += obtener_color("Amarillo") + arriesgo[posicion] + obtener_color("Defecto")
+        palabra_color_lista[posicion] = palabra_color
+
+def asignar_color_verde(conjunto_palabras,dic_letras,palabra_color_lista,posicion):
+    '''
+    AUTOR:LAUTARO MARTIN SOTELO 
+
+    PRE: recibe lista conjunto palabras(contiene arriesgo del jugador y palabra a revelar), el dic letras vacio(se rellenara con las palabras acertadas), la palabra color lista y 
+    por ultimo la posicion.
+
+    POST: no tiene retorno, modifica dic letras con los aciertos en verde, modifica la lista de palabras con color agregandolas .
+
+    '''
+    arriesgo = conjunto_palabras[0]
+    palabra = conjunto_palabras[1]
+    palabra_color = ''
     letra = arriesgo[posicion]
     if arriesgo[posicion] == palabra[posicion]:
+        asignar_letras(dic_letras,letra)
         palabra_color += obtener_color("Verde") + arriesgo[posicion] + obtener_color("Defecto")
-    elif (arriesgo[posicion] in palabra) and arriesgo[posicion] != palabra[posicion] and dic_letras[letra] <= palabra.count(letra):
-        palabra_color += obtener_color("Amarillo") + arriesgo[posicion] + obtener_color("Defecto")
+        palabra_color_lista.append(palabra_color)
     else:
         palabra_color += obtener_color("Defecto") + arriesgo[posicion]
-    return palabra_color
+        palabra_color_lista.append(palabra_color)
+
+def asignar_letras(dic_letras,letra):
+    '''
+    AUTOR: LAUTARO MARTIN SOTELO
+
+    PRE:recibe el diccionario vacio y un string letra que proviene el arriesgo introducido por el jugador
+
+    POST: devuelve el diccinario con clave letra y valor la cantidad que se encuentra
+    '''
+    if letra not in dic_letras:
+        dic_letras[letra] = 1
+    else:
+        dic_letras[letra] += 1
 
 def poner_color(arriesgo,conjunto_palabras):
     '''
-    AUTOR: ANDRES DOSKOCH / MOD :Lautaro Martin Sotelo
+    AUTOR: Lautaro Martin Sotelo
 
     PRE:Recibe la palabra que arriesgue el usuario, comprueba que sean iguales con la original.
 
     POST:Retorna una palabra que contiene los colores de acuerdo a si su posicion es correcta.
     '''
     
-    palabra_color = ""
+    palabra_color= []
+    palabra_color_str = ''
     palabra = conjunto_palabras[0]
     dic_letras = {}
+    agrupar_palabras = [arriesgo,palabra] #simplemente sirve para guardarlos en una lista y luego desempaquetarlos y evitar uso excesivo de parametros
     for posicion in range(0,len(arriesgo)):
-        letra = arriesgo[posicion]
-        if letra not in dic_letras:
-            dic_letras[letra] = 1
-            palabra_color = asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion)
-        else:
-            dic_letras[letra] += 1
-            palabra_color = asignar_color(arriesgo,dic_letras,palabra_color,palabra,posicion)
-    return palabra_color
+        asignar_color_verde(agrupar_palabras,dic_letras,palabra_color,posicion)
+    #recorro dos veces, para primero asegurar las palabras en color verde, y luego en amarillo, asi evitar letras de color amarillas de mas.
+    for posicion in range(0,len(arriesgo)):
+        asignar_color_amarillo(agrupar_palabras,dic_letras,palabra_color,posicion)
+    #ahora lo que hago es obtener el contenido de la lista palabra color y sumarle a un str vacio, asi adecuandose al tipo de dato de la matriz.
+    for elementos in palabra_color:
+        palabra_color_str += elementos
+    return palabra_color_str
 
 def modificar_oculta(palabra_sin_revelar,conjunto_palabras): 
     '''
