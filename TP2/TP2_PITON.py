@@ -531,10 +531,15 @@ def asignar_color_amarillo(conjunto_palabras,dic_letras,palabra_color_lista,posi
     palabra = conjunto_palabras[1]
     letra = arriesgo[posicion]
     palabra_color = ''
-    if (letra in palabra) and arriesgo[posicion] != palabra[posicion] and dic_letras[letra] < palabra.count(letra):
-        asignar_letras(dic_letras,letra)
-        palabra_color += obtener_color("Amarillo") + arriesgo[posicion] + obtener_color("Defecto")
-        palabra_color_lista[posicion] = palabra_color
+    if (letra in palabra) and arriesgo[posicion] != palabra[posicion]:
+        if letra not in dic_letras:
+            palabra_color += obtener_color("Amarillo") + arriesgo[posicion] + obtener_color("Defecto")
+            palabra_color_lista[posicion] = palabra_color
+            asignar_letras(dic_letras,letra)
+        elif dic_letras[letra] < palabra.count(letra):
+            alabra_color += obtener_color("Amarillo") + arriesgo[posicion] + obtener_color("Defecto")
+            palabra_color_lista[posicion] = palabra_color
+            asignar_letras(dic_letras,letra)
 
 def asignar_color_verde(conjunto_palabras,dic_letras,palabra_color_lista,posicion):
     '''
@@ -555,7 +560,7 @@ def asignar_color_verde(conjunto_palabras,dic_letras,palabra_color_lista,posicio
         palabra_color += obtener_color("Verde") + arriesgo[posicion] + obtener_color("Defecto")
         palabra_color_lista.append(palabra_color)
     else:
-        asignar_letras(dic_letras,letra)
+        #asignar_letras(dic_letras,letra)
         palabra_color += obtener_color("Defecto") + arriesgo[posicion]
         palabra_color_lista.append(palabra_color)
 
@@ -585,6 +590,7 @@ def poner_color(arriesgo,conjunto_palabras):
     palabra_color_str = ''
     palabra = conjunto_palabras[0]
     dic_letras = {}
+    palabra = reemplazar_caracteres_acentuados(palabra)
     agrupar_palabras = [arriesgo,palabra] #simplemente sirve para guardarlos en una lista y luego desempaquetarlos y evitar uso excesivo de parametros
     for posicion in range(0,len(arriesgo)):
         asignar_color_verde(agrupar_palabras,dic_letras,palabra_color,posicion)
@@ -608,6 +614,7 @@ def modificar_oculta(palabra_sin_revelar,conjunto_palabras):
     POST: modifica los caracteres de la palabra no revelada.
     '''
     auxiliar = conjunto_palabras[0] #palabra revelada
+    auxiliar = reemplazar_caracteres_acentuados(auxiliar)
     auxiliar_2 = conjunto_palabras[1] #palabra sin revelar, con los "?????"
     palabra_oculta = "" #string que reemplazara el valor de la posicion 1 de la lista
     for i in range(len(auxiliar)):
@@ -668,7 +675,7 @@ def Validacion(arriesgo,longitud):
     '''
     valido = True
     if len(arriesgo) != longitud:   # Evaluo la cantidad de caracteres  
-        print("La palabra no contiene 5 letras")
+        print("La palabra no contiene {} letras".format(longitud))
         valido = False
     elif arriesgo.isalnum() == False:  # Evaluo si tiene caracteres especiales 
         print("Su ingreso posee caracteres especiales")
@@ -800,14 +807,16 @@ def determinar_final_partida(datos_partida,palabras,tiempo_inicial,usuarios):
     '''
     arriesgo = datos_partida[0] #desempaqueto de la lista los datos que necesito para la partida.
     intentos = datos_partida[1]
-    if arriesgo.upper() == palabras[0] :
+    palabra = palabras[0]
+    palabra = reemplazar_caracteres_acentuados(palabra)
+    if arriesgo.upper() == palabra :
         print(obtener_color("Defecto") + "\npalabra a adivinar: ", palabras[1])
         datos_partida[4] = True
         tiempoJuego = time.time() - tiempo_inicial
         tiempo_jugado(tiempoJuego)
         puntos(datos_partida,usuarios)
-    elif intentos == 6 and arriesgo.upper() != palabras[0]:
-        print(obtener_color("Defecto") + "\npalabra a adivinar: ",palabras[0])
+    elif intentos == 6 and arriesgo.upper() != palabra:
+        print(obtener_color("Defecto") + "\npalabra a adivinar: ",palabra)
         puntos(datos_partida,usuarios)
         print("Perdiste!")
         datos_partida[4] = True
@@ -857,12 +866,10 @@ def juego(usuarios,datos_globales):
     palabras_validas = datos_globales[5]
     palabra_adivinar = choice(palabras_validas)
     palabras = [palabra_adivinar.upper(),interrogacion_ajustados(longitud_config)] #Se crea una lista que contiene la palabra que se busca, y una palabra que se ira rellenando deacuerdo si la posicion se cumple
-    print(palabras)
     matriz = generar_matriz(longitud_config)
     intentos = 1
     partida_terminada = False
     datos_partida = ['',intentos,datos_globales[1],datos_globales[0],partida_terminada] #Empaqueto los datos necesarios para llevar a cabo el juego y no usar el uso de parametros de mas.
-    print(palabras[0])
     while partida_terminada == False:
         print("Es el turno de {}".format(list(usuarios.keys())[datos_partida[2]])) #Similar que en la funcion puntos, al convertirlo en lista, solo accediendo a la posicion accedo a la clave/nombre del usuario.
         empiezaTiempo = time.time()
@@ -1026,6 +1033,8 @@ def volver_a_jugar(datos_partida,seguir_jugando,usuarios,datos_globales):
                 datos_partida = juego(usuarios,datos_globales)
             else:
                 datos_partida = juego(usuarios,datos_globales)
+            tiempo_partida = obtener_tiempo_partida()
+            agregar_archivo_de_partida(datos_partida,tiempo_partida,datos_globales)
         elif seguir_jugando.lower() == 'n':
             cambiar_configuracion(datos_globales)
             tiempo_partida = obtener_tiempo_partida()
