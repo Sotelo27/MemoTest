@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 from tkinter import *
 from tkinter import messagebox
+import os.path as path
 import csv
 
 configuracion = open("configuracion.csv")
@@ -972,7 +973,8 @@ def agregar_archivo_de_partida(datos_partida,tiempo_partida,datos_globales):
     with open('partidas.csv','r+'):
         for nombre in usuarios:
             if linea[0] != 0:
-                comprobar_usuario_en_archivo(usuarios,nombre,datos_partida)
+                if linea != ['']:
+                    comprobar_usuario_en_archivo(usuarios,nombre,datos_partida)
                 intentos_partida = datos_partida[1]
                 aciertos_partida = usuarios[nombre][0]
                 archivo.write('{}/{}/{},{}:{},{},{},{}\n'.format(fecha_partida[0],fecha_partida[1],fecha_partida[2],hora_finalizacion[0],hora_finalizacion[1],nombre,aciertos_partida,intentos_partida))
