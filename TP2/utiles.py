@@ -6,5 +6,3 @@ def obtener_color(color):
         "Defecto": "\x1b[39m"
     }
     return colores[color]
-
-~
